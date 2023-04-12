@@ -39,7 +39,6 @@ class QuizController extends Controller
             'name ' => ['unique', 'nullable'],
             'description' => ['required'],
             'status' => ['required', Rule::in(['public', 'private'])],
-            'creator' => ['required']
         ]);
 
         if ($validatedQuiz->fails()) {
@@ -52,14 +51,18 @@ class QuizController extends Controller
 
 
         $quiz->title = $request->title;
-        $quiz->password = $request->password;
+        $quiz->password = $request->status == 'private'?$request->password:null;
         $quiz->name = $request->name;
         $quiz->description = $request->description;
         $quiz->status = $request->status;
-        $quiz->user_id = $request->creator;
+        $quiz->user_id = $request->user()->id;
+
 
         if ($quiz->save()) {
-            return response()->json(['message' => 'Successfully Inserted!'])->setStatusCode(200);
+            return response()->json([
+                'message' => 'Successfully Inserted!',
+                'quiz_id'=> $quiz->id
+            ])->setStatusCode(200);
         }
 
         return response()->json(['message' => 'Error, cannot add Quiz'])->setStatusCode(400);
@@ -92,10 +95,10 @@ class QuizController extends Controller
         $quiz->status = $request->status;
 
         if ($quiz->save()) {
-            return response()->json(['message' => 'Successfully Inserted!'])->setStatusCode(200);
+            return response()->json(['message' => 'Successfully updated!'])->setStatusCode(200);
         }
 
-        return response()->json(['message' => 'Error, cannot add Quiz'])->setStatusCode(400);
+        return response()->json(['message' => 'Error, cannot update Quiz'])->setStatusCode(400);
     }
 
     public function destroy($id)
