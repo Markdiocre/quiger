@@ -23,6 +23,7 @@ class QuizSeeder extends Seeder
                 'title'=>"All about Albert",
                 'password'=>'Albertus',
                 'name'=>'Los albertus Big Cockus',
+                'description'=>'A quiz all about albertus and his big cockus',
                 'status'=>'private',
                 'user_id'=> User::all()->first()->id,
             ]

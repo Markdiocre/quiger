@@ -18,9 +18,10 @@ use App\Http\Controllers\QuestionController;
 */
 
 Route::post('/login', [AuthController::class,'login']);
+Route::post('/register', [AuthController::class,'register']);
 Route::post('/logout', [AuthController::class,'logout'])->middleware('auth:sanctum');
 
-Route::group(['namespace'=>'App\Http\Controllers'],function(){
+Route::group(['namespace'=>'App\Http\Controllers','middleware'=>'auth:sanctum'],function(){
     Route::apiResource('quiz',QuizController::class);
 });
 
@@ -30,4 +31,4 @@ Route::controller(QuestionController::class)->prefix('question')->group(function
     Route::post('/', 'create_question');
     Route::put('/{quiz_id}', 'update_question');
     Route::delete('/{quiz_id}', 'delete_question');
-});
+})->middleware('auth:sanctum');

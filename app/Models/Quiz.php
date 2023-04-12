@@ -13,5 +13,7 @@ class Quiz extends Model
 
     protected $table = 'quizzes';
 
-    
+    function user(){
+        return $this->belongsTo('App\Models\User');
+    }
 }

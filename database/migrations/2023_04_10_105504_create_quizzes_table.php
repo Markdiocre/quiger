@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('password')->nullable();
             $table->string('name')->unique();
+            $table->text('description');
             $table->set('status',['public','private']);
             $table->unsignedBigInteger('user_id');
             $table->timestamps();

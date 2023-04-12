@@ -7,6 +7,7 @@ use App\Http\Resources\QuizResource;
 use App\Models\Quiz;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class QuizController extends Controller
 {
@@ -19,7 +20,7 @@ class QuizController extends Controller
 
     public function index()
     {
-        return new QuizCollection(Quiz::all());
+        return new QuizCollection(Quiz::all()->where('status','=','public'));
     }
 
     public function show($id)
@@ -32,17 +33,28 @@ class QuizController extends Controller
     {
         $quiz = new Quiz;
 
-        $validate = $request->validate([
+        $validatedQuiz = Validator::make($request->all(),[
             'title' => ['required'],
             'password' => ['nullable'],
             'name ' => ['unique', 'nullable'],
+            'description' => ['required'],
             'status' => ['required', Rule::in(['public', 'private'])],
             'creator' => ['required']
         ]);
 
+        if ($validatedQuiz->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validatedQuiz->errors()
+            ], 401);
+        }
+
+
         $quiz->title = $request->title;
         $quiz->password = $request->password;
         $quiz->name = $request->name;
+        $quiz->description = $request->description;
         $quiz->status = $request->status;
         $quiz->user_id = $request->creator;
 
@@ -57,15 +69,25 @@ class QuizController extends Controller
     {
         $quiz = $this->returnUnique($id);
 
-        $validate = $request->validate([
+        $validatedQuiz = Validator::make($request->all(),[
+            'description' => ['required'],
             'title' => ['required'],
             'password' => ['nullable', Rule::requiredIf($request->status == 'private')],
             'name ' => ['unique', 'nullable'],
             'status' => ['required', Rule::in(['public', 'private'])],
         ]);
 
+        if ($validatedQuiz->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validatedQuiz->errors()
+            ], 401);
+        }
+
         $quiz->title = $request->title;
         $quiz->password = $request->password;
+        $quiz->description = $request->description;
         $quiz->name = $request->name;
         $quiz->status = $request->status;
 
