@@ -4,7 +4,10 @@ use App\Http\Controllers\QuizController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\JoinerController;
 use App\Http\Controllers\QuestionController;
+use App\Models\Quiz;
+use Illuminate\Support\Facades\Broadcast;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,5 +33,14 @@ Route::controller(QuestionController::class)->prefix('question')->group(function
     Route::get('/{quiz_id}', 'get_specific');
     Route::post('/', 'create_question');
     Route::put('/{quiz_id}', 'update_question');
-    Route::delete('/{quiz_id}', 'delete_question');
+    Route::delete('/{question_id}', 'delete_question');
 })->middleware('auth:sanctum');
+
+
+//websockets routes
+Route::controller(QuizController::class)->prefix('lobby')->group(function(){
+    Route::post('/join/{quiz_id}', 'join');
+    Route::post('/leave/{quiz_id}', 'leave');
+})->middleware('auth:sanctum');
+
+// Broadcast::routes(['middleware' => ['auth:sanctum']]);

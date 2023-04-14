@@ -69,7 +69,7 @@ class QuestionController extends Controller
             }
         }
 
-        return response()->json(['message'=>'Successfuly created Question!'])->setStatusCode(200);
+        return response()->json(['message'=>'Successfuly updated Question!'])->setStatusCode(200);
 
     }
 

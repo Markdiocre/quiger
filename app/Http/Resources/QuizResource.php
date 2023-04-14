@@ -21,7 +21,9 @@ class QuizResource extends JsonResource
             'name'=> $this->name ? $this->name : $this->id,
             'status' => $this->status,
             'creator' => new UserResource($this->user),
-            'craeted_at' => $this->created_at
+            'joiners'=> new UserCollection($this->users),
+            'craeted_at' => $this->created_at,
+            'admin'=> $request->user()->id == $this->user->id ? true: false,
         ];
     }
 }

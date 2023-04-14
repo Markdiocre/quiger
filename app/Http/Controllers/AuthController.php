@@ -44,6 +44,10 @@ class AuthController extends Controller
                 'message' => 'Successfully logged out!'
             ];
         }
+
+        return[
+            'token'=>$request->user()->currentAccessToken()
+        ];
     }
 
     public function register(Request $request)
@@ -56,7 +60,7 @@ class AuthController extends Controller
                     'firstName' => 'required',
                     'lastName' => 'required',
                     'email' => 'required|email|unique:users,email',
-                    'password' => 'required'
+                    'password' => 'required|confirmed'
                 ]
             );
 

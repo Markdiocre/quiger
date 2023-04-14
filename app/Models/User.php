@@ -41,4 +41,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function quizzes()
+    {
+        return $this->belongsToMany(Quiz::class, 'quiz_user')
+            ->withTimestamps();
+    }
+
+    public function hasJoined($quiz_id){
+        $quiz = $this->quizzes()->wherePivot('id','=',$quiz_id)->first();
+
+        return $quiz ? true: false;
+    }
 }

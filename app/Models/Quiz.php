@@ -13,7 +13,19 @@ class Quiz extends Model
 
     protected $table = 'quizzes';
 
-    function user(){
+    public function user(){
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function users(){
+        return $this->belongsToMany('App\Models\User', 'quiz_user');
+    }
+
+    public function join($user){
+        return $this->users()->attach($user);
+    }
+
+    public function leave($user){
+        return $this->users()->detach($user);
     }
 }

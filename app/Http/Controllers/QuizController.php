@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\QuizJoined;
 use App\Http\Resources\QuizCollection;
 use App\Http\Resources\QuizResource;
 use App\Models\Quiz;
+use Exception;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class QuizController extends Controller
@@ -109,5 +112,34 @@ class QuizController extends Controller
         }
 
         return response()->json(['message' => 'Error, cannot delete order'])->setStatusCode(400);
+    }
+
+
+    //on quiz join event
+    public function join(Quiz $quiz, Request $request){
+        try{
+            $quiz->join($request->user('api'));
+
+            event(new QuizJoined($request->user('api'), $quiz));
+        }catch (Exception $e) {
+            Log::error('Exception while joining a chat room', [
+                'file' => $e->getFile(),
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    //on quiz leave
+    public function leave(Quiz $quiz, Request $request){
+        try{
+            $request->user('api')->leave($quiz);
+        }catch (Exception $e) {
+            Log::error('Exception while joining a chat room', [
+                'file' => $e->getFile(),
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }

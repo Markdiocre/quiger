@@ -12,6 +12,6 @@ class Question extends Model
     protected $table = 'questions';
 
     function choice(){
-        return $this->hasMany('App\Models\Choice');
+        return $this->hasMany('App\Models\Choice','id','quiz_id');
     }
 }
